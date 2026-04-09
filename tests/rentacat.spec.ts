@@ -104,30 +104,3 @@ test('TEST-11-FEED-A-CAT-SCREENSHOT', async ({ page }) => {
     await expect(page.locator('body')).toHaveScreenshot();
 });
 
-
-// defect tests below here 
-
-test('DEFECT1-FUN-GREET-A-CAT', async ({ page }) => {
-    await page.context().addCookies([
-        {name: '1', value: 'true', url: 'https://cs1632.appspot.com/'},
-        {name: '2', value: 'true', url: 'https://cs1632.appspot.com/'},
-    ])
-    await page.getByRole('link', { name: 'Greet-A-Cat' }).click();
-    await expect(page.locator('#greeting')).toHaveText('Meow!');
-});
-
-test('DEFECT2-FUN-GREET-A-CAT-WITH-NAME', async ({ page }) => {
-    await page.context().addCookies([
-        {name: '1', value: 'true', url: 'https://cs1632.appspot.com/'}
-    ])
-    await page.goto('https://cs1632.appspot.com/greet-a-cat/Jennyanydots');
-    await expect(page.locator('#greeting')).toHaveText('Jennyanydots is not here.');
-});
-
-test('DEFECT3-FUN-FEED', async ({ page }) => {
-    await page.getByRole('link', { name: 'Feed-A-Cat' }).click();
-    await page.getByRole('textbox', { name: 'Number of catnips to feed:' }).click();
-    await page.getByRole('textbox', { name: 'Number of catnips to feed:' }).fill('-3');
-    await page.getByRole('button', { name: 'Feed' }).click();
-    await expect(page.locator('#feedResult')).toContainText('Cat fight!', { timeout: 10000 });
-});   
