@@ -1,0 +1,44 @@
+name: Docker CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  test_dockerized_webserver:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Playwright
+        run: npm install -D @playwright/test
+      
+      - name: Set up Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Launch Web Service
+        run: docker compose up -d
+
+      - name: Run Playwright Tests
+        run: npx playwright test --project=chromium
+
+        # https://github.com/marketplace/actions/upload-a-build-artifact
+      - name: Upload Playwright results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Playwright results
+          path: playwright-report/
